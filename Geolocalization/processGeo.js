@@ -61,9 +61,9 @@ exports.getInfoAndSave = (req, res, next) => {
 
 const request = require('request')
 
-let makeServiceRequest = function(json){ return new Promise(function(resolve, reject) {
+let makeServiceRequest = function(jsonParams){ return new Promise(function(resolve, reject) {
     
-    request.post('http://localhost:5001', json, (error, res, body) => {
+    request.post('http://localhost:5001', {json: jsonParams}, (error, res, body) => {
         if (error) {
           reject()
           return
