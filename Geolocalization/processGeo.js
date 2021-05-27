@@ -43,11 +43,10 @@ exports.getInfoAndSave = (req, res, next) => {
     newGeoInfo.save().then(result => {
         if(result){
             
-            makeServiceRequest(newGeoInfo).then(function(resolve) {
-                console.log(resolve)
-                return res.status(202).json({Id: newGeoInfo._id})
+            makeServiceRequest(newGeoInfo).then(function(resolve) {    // Http POST to asking server
+                return res.status(202).json({Id: newGeoInfo._id})      // If receive, give Id as response
             }, function(reject){
-                console.log(reject)
+                newGeoInfo.delete()                                     // Avoid error if its saved but not transfered
                 return res.status(400).json({error: "Service not responding, try later"}) 
             })                        
             
@@ -60,13 +59,21 @@ exports.getInfoAndSave = (req, res, next) => {
 
 //_______________________________________________________________________________________________________________________
 
-const https = require('https')
+const request = require('request')
 
 let makeServiceRequest = function(json){ return new Promise(function(resolve, reject) {
     
-    
-    var req = http.request(params, function(res) {    
-    });
+    request.post('http://localhost:5001', json, (error, res, body) => {
+        if (error) {
+          reject()
+          return
+        }
+        if(res.statusCode(200)) resolve()
+        else reject()
+      }
+    )
 })
   
 }
+//_______________________________________________________________________________________________________________________
+
