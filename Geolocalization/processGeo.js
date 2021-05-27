@@ -20,7 +20,6 @@ const geoInfo = require("../Database/models.js");
 // After validating JSONFields save it in DB and send it
 exports.getInfoAndSave = (req, res, next) => {
     
-
     geoInfo.find(req.body)  // Check if already exists
     .exec()
     .then(geoInfoInDB => {
@@ -60,6 +59,8 @@ const { read } = require("fs/promises")
 
 let makeServiceRequest = function(jsonParams){ return new Promise(function(resolve, reject) {
     
+    resolve()  
+
     request.post('http://localhost:5001', {json: jsonParams}, (error, res, body) => {
         if (error) {
           reject()
@@ -68,7 +69,7 @@ let makeServiceRequest = function(jsonParams){ return new Promise(function(resol
         if(res.statusCode(200)) resolve()
         else reject()
       }
-    )
+    ).catch(reject())
 })
   
 }
@@ -81,21 +82,26 @@ exports.getAnswerFromService = (req, res, next) => {
     geoInfo.find({_id : req.body.id})  // Check if already exists
     .exec()
     .then(geoInfoInDB => {
-        
-        if(geoInfoInDB.length>0) {
-            geoInfo.updateOne(
-            { _id: req.body.id},
+        if(geoInfoInDB.length>0 && req.body.longitud && req.body.latitud) {
+geoInfoInDB[0].resultado.estado="TERMINADO"
+geoInfoInDB[0].resultado.longitud = req.body.longitud
+geoInfoInDB[0].resultado.latitud= req.body.latitud
 
-            {
-                resultado
-        },
-            function(err, numberAffected, rawResponse) {
-                console.log(rawr)
-                if(err) return res.status(400).json({
-                  message: "Server timeout"
-                }); 
-                return res.status(200).json({});
-             }).catch(error=> {return res.status(400).json({error})})
+geoInfo.findOneAndUpdate({_id: req.body.id}, geoInfoInDB[0], {upsert: true}, function(err, doc) {
+    if (err) return res.send(500, {error: err});
+    return res.send("Saved");
+});
+
         }   else return res.status(400).json({error})
         } ).catch(error=> {return res.status(400).json({error})})
     }
+
+//_______________________________________________________________________________________________________________________
+
+exports.showGeoResult= (req, res, next) => {
+  //    req.query.id
+
+
+}
+
+//_______________________________________________________________________________________________________________________
