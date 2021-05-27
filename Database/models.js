@@ -13,8 +13,8 @@ const geoInfoSchema = mongoose.Schema({
     provincia: {type: String},
     pais: {type: String},
     resultado: {
-        latitud: {type: String},
-        longitud: {type: String},
+        latitud: {type: String, default:""},
+        longitud: {type: String, default:""},
         estado: {type: String, default:"PROCESANDO"},
     }
 });

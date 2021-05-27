@@ -99,8 +99,22 @@ geoInfo.findOneAndUpdate({_id: req.body.id}, geoInfoInDB[0], {upsert: true}, fun
 //_______________________________________________________________________________________________________________________
 
 exports.showGeoResult= (req, res, next) => {
-  //    req.query.id
 
+  geoInfo.find({_id : req.query.id})    // Check if is in DB
+  .exec()
+  .then(geoInfoInDB => {
+if(geoInfoInDB.length<1) return res.status(400).json({error: "There were not order to track this id"}) //If not 400
+console.log(geoInfoInDB[0])
+return res.status(200).json({
+    id: req.body.id,
+    latitud: geoInfoInDB[0].resultado.latitud,
+    longitud: geoInfoInDB[0].resultado.longitud,
+    estado: geoInfoInDB[0].resultado.estado
+})
+
+
+
+  })
 
 }
 
