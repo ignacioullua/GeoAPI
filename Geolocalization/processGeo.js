@@ -88,8 +88,8 @@ geoInfoInDB[0].resultado.longitud = req.body.longitud
 geoInfoInDB[0].resultado.latitud= req.body.latitud
 
 geoInfo.findOneAndUpdate({_id: req.body.id}, geoInfoInDB[0], {upsert: true}, function(err, doc) {
-    if (err) return res.send(500, {error: err});
-    return res.send("Saved");
+    if (err) return res.send(500, {error: err});                    //Update in DB with result given by geoService
+    return res.send("Saved");           
 });
 
         }   else return res.status(400).json({error})
@@ -105,7 +105,7 @@ exports.showGeoResult= (req, res, next) => {
   .then(geoInfoInDB => {
 if(geoInfoInDB.length<1) return res.status(400).json({error: "There were not order to track this id"}) //If not 400
 console.log(geoInfoInDB[0])
-return res.status(200).json({
+return res.status(200).json({                               //If is there, show result
     id: req.body.id,
     latitud: geoInfoInDB[0].resultado.latitud,
     longitud: geoInfoInDB[0].resultado.longitud,
@@ -114,7 +114,7 @@ return res.status(200).json({
 
 
 
-  })
+  }).catch(error=> {return res.status(400).json({error: "DB unresponsive. Try later"})})
 
 }
 
