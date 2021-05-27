@@ -39,18 +39,34 @@ exports.getInfoAndSave = (req, res, next) => {
         provincia: req.body.provincia,
         pais: req.body.pais,
     });    
-    
+
     newGeoInfo.save().then(result => {
-        if(result)return res.status(202).json({Id: newGeoInfo._id})
-        
-        })
+        if(result){
+            
+            makeServiceRequest(newGeoInfo).then(function(resolve) {
+                console.log(resolve)
+                return res.status(202).json({Id: newGeoInfo._id})
+            }, function(reject){
+                console.log(reject)
+                return res.status(400).json({error: "Service not responding, try later"}) 
+            })                        
+            
+        }
+        }).catch(error=> {res.status(400).json({error:error})})
     
     });
-
-
-      
-
-        
+             
 }
 
 //_______________________________________________________________________________________________________________________
+
+const https = require('https')
+
+let makeServiceRequest = function(json){ return new Promise(function(resolve, reject) {
+    
+    
+    var req = http.request(params, function(res) {    
+    });
+})
+  
+}
