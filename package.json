@@ -1,0 +1,14 @@
+{
+  "name": "geoapi",
+  "version": "1.0.0",
+  "description": "GeoApi4Andreani",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "Ignacio Ullua",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
