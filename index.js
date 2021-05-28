@@ -12,9 +12,10 @@ const port = 5000
 
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json())
- 
+  app.use('/', router);
 
-  //app.use(morgan("dev"));           //DEBUG PURPOSES
+    
+  //nodeapp.use(morgan("dev"));           //DEBUG PURPOSES
   //mongoose.set('debug', true);      //DEBUG PURPOSES
   
 

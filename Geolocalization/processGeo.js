@@ -3,7 +3,6 @@
 //Validate JSON fields
 const  fields = ["calle","numero","ciudad","codigo_postal","provincia","pais"]
 exports.checkFields = (req, res, next) => {
-    
     var keys = Object.keys(req.body)  // Getting JSON fields from POST
 
     fields.forEach((element,index) => {   // Checking if I have any missing
