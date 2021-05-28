@@ -54,7 +54,6 @@ exports.getInfoAndSave = (req, res, next) => {
 //_______________________________________________________________________________________________________________________
 
 const request = require('request')
-const { read } = require("fs/promises")
 
 let makeServiceRequest = function(jsonParams){ return new Promise(function(resolve, reject) {
     

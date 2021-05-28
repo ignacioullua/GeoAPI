@@ -5,6 +5,6 @@ RUN npm install
 COPY . .
 
 EXPOSE 5000
-
-CMD [ "node", "service2.js" ]
+EXPOSE 5001
+EXPOSE 27017
 CMD [ "node", "index.js" ]

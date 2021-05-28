@@ -5,7 +5,7 @@ const bodyParser = require("body-parser")
 const morgan = require("morgan")
 const router = require("./Router/routes")
 const app = express()
-
+const service2 = require("./service2")
 const port = 5000
 
 app.listen(port, () => {
