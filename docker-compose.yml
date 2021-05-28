@@ -1,15 +1,21 @@
-version: "2"
+version: "3"
 
 services:
 
   web:
+    container_name: exApp
+    restart: always
     build: .
     ports:
       - "5000:5000"
+      - "5001:5001"
     links:
       - mongo
-
+    volumes: 
+      - .:/usr/src/app
   mongo:
+    container_name: myDb
     image: mongo
     ports:
       - "27017:27017"
+    command: --quiet

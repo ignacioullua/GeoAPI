@@ -4,6 +4,7 @@
   "description": "GeoApi4Andreani",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js",
     "start": "node index.js",
     "test": "node index.js"
   },
@@ -14,6 +15,7 @@
     "express": "^4.17.1",
     "mongoose": "^5.12.11",
     "morgan": "^1.10.0",
+    "nodemon": "^2.0.7",
     "request": "^2.88.2"
   }
 }

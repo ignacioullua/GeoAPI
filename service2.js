@@ -17,7 +17,7 @@ app2.listen(port2, () => {
 
   app2.use(morgan("dev"));           //DEBUG PURPOSES
 
-  setInterval(resolveTasks, 20000);
+  setInterval(resolveTasks, 20000);   // Persistence for tasks unsolved
 
 
   //_____________________________________________________________________________________________________________________
@@ -25,6 +25,7 @@ app2.listen(port2, () => {
   function getGeoInformation(req,res){
    geoTasks.push(req.body)                //Push a new task into tasks array
    console.log("Pushing a new task");
+   resolveTasks();                        //Resolve task asap
    return res.status(200).json({})
   
 }
