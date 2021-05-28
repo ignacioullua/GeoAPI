@@ -17,31 +17,22 @@ app2.listen(port2, () => {
 
   app2.use(morgan("dev"));           //DEBUG PURPOSES
 
-  setTimeout(resolveTasks, 5000);
+  setInterval(resolveTasks, 20000);
 
-  let geoTasks = [{
-    resultado: { latitud: '', longitud: '', estado: 'PROCESANDO' },
-    _id: '60b03a1cacef790b7c693927',
-    numero: '471',
-    calle: 'Virrey liniers',
-    ciudad: 'Buenos Aires',
-    codigo_postal: '1206',
-    provincia: 'Buenos Aires',
-    pais: 'Argentina',
-    __v: 0
-  }]  // Define arrays of objects
+
+  //_____________________________________________________________________________________________________________________
+  let geoTasks = []  // Define arrays of objects //
   function getGeoInformation(req,res){
    geoTasks.push(req.body)                //Push a new task into tasks array
    console.log("Pushing a new task");
-   console.log(req.body)
    return res.status(200).json({})
   
 }
 
-
+//_____________________________________________________________________________________________________________________
   function resolveTasks(){
-if(geoTasks.length<1) return;
 console.log(geoTasks.length + " task to do");
+if(geoTasks.length<1) return;
 geoTasks.forEach(task=>{
 
 askOpenStreetMap({
@@ -52,7 +43,35 @@ askOpenStreetMap({
     state: task.provincia,
     country: task.pais
 
+}).then(function(resolve) {    // Http POST to asking server
+   var jsonData = JSON.parse(resolve);
+   if(jsonData[0]==undefined) {  //Si el motor de busqueda no lo encuentra
+    latitudeValue="Not found"
+    longitudeValue="Not found"
+   } else {
+       latitudeValue=jsonData[0].lat
+       longitudeValue=jsonData[0].lon
+   }
+
+   sendBackToApi(latitudeValue,longitudeValue,task._id).then(
+    function(resolve){  //If api receive, delete task 
+        
+
+        const index = geoTasks.indexOf(task);
+        if (index > -1) {                                   //Delete task
+          geoTasks.splice(index, 1);
+        }
+        
+
+    },
+    function(reject){console.log("Error")}
+   )
+}, function(reject){
+   console.log("Try again later")
 })
+
+
+
 
 
 })
@@ -61,25 +80,31 @@ askOpenStreetMap({
 
   }
 
-
+//_______________________________________________________________________________________________________________________
   const request = require('request')
   const querystring = require('querystring');
+
+  //Send info about location and fetch geocoding
+
   let askOpenStreetMap = function(jsonParams){ return new Promise(function(resolve, reject) {
 
     jsonParams.format="json"
 
-    const urlQueryString = querystring.stringify(jsonParams);
-
-   console.log(urlQueryString)
-    request.get('https://nominatim.openstreetmap.org/search?' + urlQueryString, (error, res, body) => {
+    const urlQueryString ='https://nominatim.openstreetmap.org/search?' + querystring.stringify(jsonParams);
+    
+    request.get(   { 
+        headers: {
+        "User-Agent" : "Nodejs",
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },uri: urlQueryString
+    }, (error, res, body) => {
         if (error) {
-            console.log("error")
+           reject()
           return;
         }
         
-       if(res) {
-     console.log(res.body)
-    return
+       if(res.statusCode==200) {
+     return resolve(res.body)
 }
       }
     )
@@ -88,3 +113,26 @@ askOpenStreetMap({
   
 }
 //_______________________________________________________________________________________________________________________
+
+//When info about geocoding is ready post it to main API
+
+let sendBackToApi =  function(latitud,longitud,id){ return new Promise(function(resolve, reject) {
+    let jsonInfo = {"id": id, "latitud": latitud, "longitud": longitud }    
+
+    request.post('http://localhost:5000/getAnswer', {json: jsonInfo}, (error, res, body) => {
+        if (error) {
+          reject()
+          
+        }
+        
+       if(res) {
+           if(res.statusCode == 200) resolve()
+       else reject()
+    }
+      }
+    )
+   
+})
+  
+}
+
