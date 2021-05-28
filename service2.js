@@ -30,7 +30,9 @@ app2.listen(port2, () => {
 }
 
 //_____________________________________________________________________________________________________________________
-  function resolveTasks(){
+// See tasks available and get it done it
+
+ function resolveTasks(){
 console.log(geoTasks.length + " task to do");
 if(geoTasks.length<1) return;
 geoTasks.forEach(task=>{
