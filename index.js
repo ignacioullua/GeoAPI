@@ -17,7 +17,7 @@ app.listen(port, () => {
   app.use('/', router);
 
   app.use(morgan("dev"));           //DEBUG PURPOSES
-  mongoose.set('debug', true);      //DEBUG PURPOSES
+  //mongoose.set('debug', true);      //DEBUG PURPOSES
   
   mongoose.Promise = global.Promise;
   mongoose.connect('mongodb://localhost:27017/geoDB', {useNewUrlParser: true,  useUnifiedTopology: true });

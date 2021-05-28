@@ -37,7 +37,6 @@ exports.getInfoAndSave = (req, res, next) => {
 
     newGeoInfo.save().then(result => {
         if(result){
-            
             makeServiceRequest(newGeoInfo).then(function(resolve) {    // Http POST to asking server
                 return res.status(202).json({Id: newGeoInfo._id})      // If receive, give Id as response
             }, function(reject){
@@ -59,17 +58,20 @@ const { read } = require("fs/promises")
 
 let makeServiceRequest = function(jsonParams){ return new Promise(function(resolve, reject) {
     
-    resolve()  
-
+    
     request.post('http://localhost:5001', {json: jsonParams}, (error, res, body) => {
         if (error) {
           reject()
-          return
+          
         }
-        if(res.statusCode(200)) resolve()
-        else reject()
+        
+       if(res) {
+           if(res.statusCode == 200) resolve()
+       else reject()
+    }
       }
-    ).catch(reject())
+    )
+   
 })
   
 }
