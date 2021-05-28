@@ -8,16 +8,19 @@ const app = express()
 const service2 = require("./service2")
 const port = 5000
 
-app.listen(port, () => {
-    console.log("Listening at http://localhost:" + port)
-  })
+
 
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json())
-  app.use('/', router);
+ 
 
-  app.use(morgan("dev"));           //DEBUG PURPOSES
+  //app.use(morgan("dev"));           //DEBUG PURPOSES
   //mongoose.set('debug', true);      //DEBUG PURPOSES
   
+
   mongoose.Promise = global.Promise;
-  mongoose.connect('mongodb://localhost:27017/geoDB', {useNewUrlParser: true,  useUnifiedTopology: true });
+  mongoose.connect('mongodb://mongo:27017/geoDB', {useNewUrlParser: true,  useUnifiedTopology: true });
+  mongoose.connection.once('open', function() { 
+    app.listen(port, () => {
+      console.log("Listening at http://localhost:" + port)
+    })});

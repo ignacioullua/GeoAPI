@@ -1,25 +1,17 @@
-version: "3.3"
+version: "2"
+
 services:
+
   web:
     build: .
     volumes:
-      - "./app:/src/app"
+      - ./:/app
     ports:
       - "5000:5000"
-      - "5001:5001"
-
     links:
       - mongo
-    depends_on:
-      - mongo
-    environment:
-      WAIT_HOSTS: mongo:27017
+
   mongo:
-    container_name: mongo
     image: mongo
-    volumes:
-      - ./geoDB:/geoDB/
     ports:
       - "27017:27017"
-volumes:
-  mongo_data:
